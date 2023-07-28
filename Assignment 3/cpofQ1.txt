@@ -1,0 +1,54 @@
+#include<stdio.h>
+#include<fcntl.h>
+#include<unistd.h>
+#include<sys/stat.h>
+
+#define BLOCKSIZE 1024
+
+int main( int argc , char * argv[] )
+{
+	int fd = 0;
+	int fdDest = 0;
+	int ret = 0;
+	char buffer[BLOCKSIZE] = {'\0'};
+
+	if( argc != 3 )
+	{
+		printf("Invalid number of arguments !\n");
+		return -1;
+	}
+
+	if( (access( argv[1] ,R_OK)) != F_OK )
+	{
+		printf("unable to access file \n");
+		return -1;
+	}
+
+	fd = open( argv[1] , O_RDONLY );
+
+	if( fd == -1 )
+	{
+		printf("unable to open file \n");
+		perror("open");
+		return -1;
+	}
+
+	fdDest = creat( argv[2], 0777 );
+
+	if( fdDest == -1 )
+	{
+		printf("unable to create file \n");
+		close(fd);
+		return -1;
+	}
+	while( (ret = read(fd , buffer , sizeof(buffer) ) ) != 0 )
+	{
+		write( fdDest , buffer , ret );
+	}
+
+	close(fd);
+	close(fdDest);
+
+
+	return 0;
+}
