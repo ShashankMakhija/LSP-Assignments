@@ -5,12 +5,12 @@
 
 int main()
 {
-    int ret = 0;
-
-    setpriority(PRIO_PROCESS,0,-5);
+    int ret = 0; int currPrio = 0;
+    currPrio = getpriority(PRIO_PROCESS,0);
+    ret = nice(currPrio-5);
     if( ret == -1 )
     {
-        perror("ret->\n");
+        perror("nice->\n");
         return -1;
     }
 
